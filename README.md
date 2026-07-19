@@ -111,9 +111,10 @@ Run from the build directory:
 │   │   └── ransac.h        # Header-only RANSAC plane segmentation
 │   ├── cluster/            # Custom clustering implementation
 │   │   └── cluster.h       # Header-only KD-Tree + Euclidean clustering
-│   ├── cluster.cpp        # Quiz: KD-tree visualization
-│   ├── kdtree.h            # Quiz: Original 2D KD-tree
-│   ├── ransac2d.cpp        # Quiz: RANSAC 2D line fitting
+│   ├── quizs/              # Quiz implementations
+│   │   ├── cluster.cpp     # Quiz: KD-tree visualization
+│   │   ├── kdtree.h        # Quiz: Original 2D KD-tree
+│   │   └── ransac2d.cpp    # Quiz: RANSAC 2D line fitting
 │   └── sensors/            # Sensor implementations
 ├── data/                  # Sample point cloud data
 └── README.md
@@ -155,6 +156,22 @@ Run from the build directory:
 - **Efficient**: Uses Welford's online algorithm for efficient mean and variance calculation
 - **Performance**: Greatly increases clustering accuracy for small vertically-extended obstacles
 - **Threshold**: Configurable ratio parameter (default: 3.0x vertical variance required)
+
+## Demo
+
+A screen recording demonstrating the LiDAR obstacle detection in action is available in the repository root:
+
+📹 **[ScreenRecordingLidarObstacleDetection.mov](ScreenRecordingLidarObstacleDetection.mov)**
+
+**Note**: This is a QuickTime MOV file. To view it:
+- **macOS**: Double-click to open in QuickTime Player (pre-installed)
+- **Windows**: Use Windows Media Player, VLC, or convert to MP4
+- **Linux**: Use VLC or ffplay
+
+Alternatively, you can convert it to MP4 for better browser compatibility:
+```bash
+ffmpeg -i ScreenRecordingLidarObstacleDetection.mov -c:v libx264 -pix_fmt yuv420p ScreenRecordingLidarObstacleDetection.mp4
+```
 
 ## Notes
 
