@@ -13,8 +13,9 @@
 struct Color
 {
 
-	float r, g, b;
+	float r{0.0f}, g{0.0f}, b{0.0f};
 
+	Color() = default;
 	Color(float setR, float setG, float setB)
 		: r(setR), g(setG), b(setB)
 	{}
@@ -23,8 +24,9 @@ struct Color
 struct Vect3
 {
 
-	double x, y, z;
+	double x{0.0}, y{0.0}, z{0.0};
 
+	Vect3() = default;
 	Vect3(double setX, double setY, double setZ)
 		: x(setX), y(setY), z(setZ)
 	{}
@@ -36,7 +38,7 @@ struct Vect3
 	}
 };
 
-enum CameraAngle
+enum class CameraAngle
 {
 	XY, TopDown, Side, FPS
 };
@@ -45,10 +47,10 @@ struct Car
 {
 
 	// units in meters
-  	Vect3 position, dimensions;
+  	Vect3 position{}, dimensions{};
   	
-  	std::string name;
-  	Color color;
+  	std::string name{};
+  	Color color{};
 
   	Car(Vect3 setPosition, Vect3 setDimensions, Color setColor, std::string setName)
     	: position(setPosition), dimensions(setDimensions), name(setName), color(setColor)

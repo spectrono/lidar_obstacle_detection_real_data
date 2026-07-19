@@ -5,16 +5,16 @@
 #include <chrono>
 #include <iostream>
 
-const double pi = 3.1415;
+constexpr double pi = 3.14159265358979323846;
 
 struct Ray
 {
 	
-	Vect3 origin;
-	double resolution;
-	Vect3 direction;
-	Vect3 castPosition;
-	double castDistance;
+	Vect3 origin{};
+	double resolution{0.0};
+	Vect3 direction{};
+	Vect3 castPosition{};
+	double castDistance{0.0};
 
 	// parameters:
 	// setOrigin: the starting position from where the ray is cast
@@ -73,15 +73,15 @@ struct Ray
 struct Lidar
 {
 
-	std::vector<Ray> rays;
-	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud;
-	std::vector<Car> cars;
-	Vect3 position;
-	double groundSlope;
-	double minDistance;
-	double maxDistance;
-	double resoultion;
-	double sderr;
+	std::vector<Ray> rays{};
+	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud{};
+	std::vector<Car> cars{};
+	Vect3 position{};
+	double groundSlope{0.0};
+	double minDistance{0.0};
+	double maxDistance{0.0};
+	double resoultion{0.0};
+	double sderr{0.0};
 
 	Lidar(std::vector<Car> setCars, double setGroundSlope)
 		: cloud(new pcl::PointCloud<pcl::PointXYZ>()), position(0,0,2.6)
