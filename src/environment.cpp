@@ -32,7 +32,7 @@ void cityBlock(
 
     // Segment point cloud in ground plane and obstacles
     using segmentation_result_type = std::pair<point_cloud_type, point_cloud_type>;   
-    segmentation_result_type plane_segmentation_result_0 = point_cloud_processor_p->SegmentPlane(filtered_cloud_without_roof, 100, 0.2f);
+    segmentation_result_type plane_segmentation_result_0 = point_cloud_processor_p->SegmentPlane(filtered_cloud_without_roof, 200, 0.23f);
 
     Color ground_plane_color{0.0f, 1.0f, 0.0f};
     renderPointCloud(viewer, plane_segmentation_result_0.second, "Plane Cloud", ground_plane_color);
@@ -40,9 +40,9 @@ void cityBlock(
     std::vector<point_cloud_type> cloud_clusters = point_cloud_processor_p->Clustering(plane_segmentation_result_0.first, 1.0, 20, 1000);
 
     int cluster_id = 0;
-    std::vector<Color> obstacle_colors = {Color(1.0f, 0.0f, 0.0f), Color(1.0f, 1.0f, 0.0f), Color(0.0f, 0.5f, 1.0f), Color(0.0f, 0.0f, 1.0f)};
+    const std::vector<Color> obstacle_colors = {Color(1.0f, 0.0f, 0.0f), Color(1.0f, 1.0f, 0.0f), Color(0.0f, 0.5f, 1.0f), Color(0.0f, 0.0f, 1.0f)};
     const int obstacle_colors_count{static_cast<int>(obstacle_colors.size())};
-    for (point_cloud_type cluster : cloud_clusters)
+    for (const auto& cluster : cloud_clusters)
     {
         std::cout << "cluster size: ";
         
@@ -59,13 +59,8 @@ void cityBlock(
 
     // Render roof crop area
     const int roof_cluster_id{cluster_id};
-    Box roof_bbox;
-    roof_bbox.x_min = minPointRoof[0];
-    roof_bbox.y_min = minPointRoof[1];
-    roof_bbox.z_min = minPointRoof[2];
-    roof_bbox.x_max = maxPointRoof[0];
-    roof_bbox.y_max = maxPointRoof[1];
-    roof_bbox.z_max = maxPointRoof[2];
+    const Box roof_bbox{minPointRoof[0], minPointRoof[1], minPointRoof[2],
+                       maxPointRoof[0], maxPointRoof[1], maxPointRoof[2]};
     renderBox(viewer, roof_bbox, roof_cluster_id);
 }
 
@@ -82,13 +77,13 @@ void initCamera(CameraAngle setAngle, pcl::visualization::PCLVisualizer::Ptr& vi
 
     switch(setAngle)
     {
-        case XY : viewer->setCameraPosition(-distance, -distance, distance, 1, 1, 0); break;
-        case TopDown : viewer->setCameraPosition(0, 0, distance, 1, 0, 1); break;
-        case Side : viewer->setCameraPosition(0, -distance, 0, 0, 0, 1); break;
-        case FPS : viewer->setCameraPosition(-10, 0, 0, 0, 0, 1);
+        case CameraAngle::XY : viewer->setCameraPosition(-distance, -distance, distance, 1, 1, 0); break;
+        case CameraAngle::TopDown : viewer->setCameraPosition(0, 0, distance, 1, 0, 1); break;
+        case CameraAngle::Side : viewer->setCameraPosition(0, -distance, 0, 0, 0, 1); break;
+        case CameraAngle::FPS : viewer->setCameraPosition(-10, 0, 0, 0, 0, 1);
     }
 
-    if(setAngle!=FPS)
+    if(setAngle != CameraAngle::FPS)
         viewer->addCoordinateSystem (1.0);
 }
 
@@ -98,7 +93,7 @@ int main (int argc, char** argv)
     std::cout << "starting enviroment" << std::endl;
 
     pcl::visualization::PCLVisualizer::Ptr viewer (new pcl::visualization::PCLVisualizer ("3D Viewer"));
-    CameraAngle setAngle = XY;
+    CameraAngle setAngle = CameraAngle::XY;
     initCamera(setAngle, viewer);
 
     // Real data

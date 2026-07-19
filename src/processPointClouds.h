@@ -19,6 +19,7 @@
 #include <chrono>
 #include <filesystem>
 #include "render/box.h"
+#include "ransac/ransac.h"
 
 template<typename PointT>
 class ProcessPointClouds {
@@ -37,7 +38,15 @@ public:
 
     std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> SeparateClouds(pcl::PointIndices::Ptr inliers, typename pcl::PointCloud<PointT>::Ptr cloud);
 
-    std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> SegmentPlane(typename pcl::PointCloud<PointT>::Ptr cloud, int maxIterations, float distanceThreshold);
+    std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> SegmentPlanePCL(
+        typename pcl::PointCloud<PointT>::Ptr cloud,
+        int maxIterations,
+        float distanceThreshold);
+    
+    std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> SegmentPlane(
+        const typename pcl::PointCloud<PointT>::Ptr& cloud,
+        const int maxIterations,
+        const float distanceThreshold);
 
     std::vector<typename pcl::PointCloud<PointT>::Ptr> Clustering(typename pcl::PointCloud<PointT>::Ptr cloud, float clusterTolerance, int minSize, int maxSize);
 

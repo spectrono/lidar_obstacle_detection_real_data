@@ -26,7 +26,7 @@ project(lidar_obstacle_detection VERSION 1.0.0 LANGUAGES CXX)
 
 find_package(PCL 1.15 REQUIRED)
 
-include_directories(${PCL_INCLUDE_DIRS})
+include_directories(${PCL_INCLUDE_DIRS} src/ransac)
 link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 list(REMOVE_ITEM PCL_LIBRARIES "vtkproj4")
@@ -51,7 +51,4 @@ add_executable(quizRansac
     src/processPointClouds.cpp
 )
 target_link_libraries(quizRansac ${PCL_LIBRARIES})
-
-
-
 
