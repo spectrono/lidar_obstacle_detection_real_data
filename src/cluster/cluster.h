@@ -188,19 +188,23 @@ private:
             }
             else if (current_axis == 1)
             {
-                if ((target_val - distanceTol) < node_val) {
+                if ((target_val - distanceTol) < node_val)
+                {
                     searchFromNode(node->left, target, depth + 1, distanceTol, ids);
                 }
-                if ((target_val + distanceTol) > node_val) {
+                if ((target_val + distanceTol) > node_val)
+                {
                     searchFromNode(node->right, target, depth + 1, distanceTol, ids);
                 }
             }
             else
             { // current_axis == 2
-                if ((target_val - distanceTol) < node_val) {
+                if ((target_val - distanceTol) < node_val)
+                {
                     searchFromNode(node->left, target, depth + 1, distanceTol, ids);
                 }
-                if ((target_val + distanceTol) > node_val) {
+                if ((target_val + distanceTol) > node_val)
+                {
                     searchFromNode(node->right, target, depth + 1, distanceTol, ids);
                 }
             }
