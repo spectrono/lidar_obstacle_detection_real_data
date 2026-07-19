@@ -107,6 +107,8 @@ Run from the build directory:
 │   ├── environment.cpp     # Main application
 │   ├── processPointClouds.cpp/h  # Point cloud processing
 │   ├── render/             # Rendering utilities
+│   ├── ransac/             # Custom RANSAC implementation
+│   │   └── ransac.h        # Header-only RANSAC algorithms
 │   ├── cluster.cpp        # Quiz: KD-tree clustering
 │   ├── kdtree.h            # Quiz: KD-tree implementation
 │   ├── ransac2d.cpp        # Quiz: RANSAC 2D line fitting
@@ -114,6 +116,25 @@ Run from the build directory:
 ├── data/                  # Sample point cloud data
 └── README.md
 ```
+
+## Features
+
+### Custom RANSAC Implementation
+- **Header-only library** in `src/ransac/ransac.h`
+- **Template-based** - works with any PCL point type (XYZ, XYZI, XYZRGB, etc.)
+- **Plane segmentation** with configurable parameters:
+  - Max iterations
+  - Distance threshold
+  - Random seed for reproducibility
+  - Angle threshold for ground plane detection
+  - Optional horizontal plane enforcement
+
+### Quality Metrics
+- Outputs plane orientation statistics:
+  - Tilt angle (pitch)
+  - Roll angle
+  - Angle from vertical
+  - Mean and median inlier distances
 
 ## Notes
 
