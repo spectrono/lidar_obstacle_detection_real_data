@@ -108,9 +108,11 @@ Run from the build directory:
 │   ├── processPointClouds.cpp/h  # Point cloud processing
 │   ├── render/             # Rendering utilities
 │   ├── ransac/             # Custom RANSAC implementation
-│   │   └── ransac.h        # Header-only RANSAC algorithms
-│   ├── cluster.cpp        # Quiz: KD-tree clustering
-│   ├── kdtree.h            # Quiz: KD-tree implementation
+│   │   └── ransac.h        # Header-only RANSAC plane segmentation
+│   ├── cluster/            # Custom clustering implementation
+│   │   └── cluster.h       # Header-only KD-Tree + Euclidean clustering
+│   ├── cluster.cpp        # Quiz: KD-tree visualization
+│   ├── kdtree.h            # Quiz: Original 2D KD-tree
 │   ├── ransac2d.cpp        # Quiz: RANSAC 2D line fitting
 │   └── sensors/            # Sensor implementations
 ├── data/                  # Sample point cloud data
@@ -135,6 +137,15 @@ Run from the build directory:
   - Roll angle
   - Angle from vertical
   - Mean and median inlier distances
+
+### Custom Euclidean Clustering
+- **Header-only library** in `src/cluster/cluster.h`
+- **Template-based** - works with any PCL point type (XYZ, XYZI, XYZRGB, etc.)
+- **KD-Tree implementation** for efficient nearest neighbor search
+- **Configurable parameters**:
+  - Distance tolerance
+  - Minimum cluster size
+  - Maximum cluster size
 
 ## Notes
 
