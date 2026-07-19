@@ -23,11 +23,11 @@ void cityBlock(
     using point_type = pcl::PointXYZI;
     using point_cloud_type = pcl::PointCloud<point_type>::Ptr;
     
-    point_cloud_type filtered_cloud = point_cloud_processor_p->FilterCloud(input_cloud, 0.2, Eigen::Vector4f(-5.0f,-7.0f,-2.8f, 1.0f), Eigen::Vector4f(25.0f, 7.0f, 1.5f, 1.0f));
+    point_cloud_type filtered_cloud = point_cloud_processor_p->FilterCloud(input_cloud, 0.2, Eigen::Vector4f(-6.0f,-6.0f,-2.8f, 1.0f), Eigen::Vector4f(25.0f, 7.0f, 3.0f, 1.0f));
 
     // Remove roof from filtered cloud
-    Eigen::Vector4f minPointRoof(-1.52f, -1.81f, -1.03f, 1.0f);
-    Eigen::Vector4f maxPointRoof( 2.63f,  1.81f, -0.20f, 1.0f);
+    Eigen::Vector4f minPointRoof(-1.51f, -1.79f, -1.03f, 1.0f);
+    Eigen::Vector4f maxPointRoof( 2.62f,  1.79f, -0.20f, 1.0f);
     point_cloud_type filtered_cloud_without_roof = point_cloud_processor_p->applyBoxCropOnCloud(filtered_cloud, minPointRoof, maxPointRoof, true);
 
     // Segment point cloud in ground plane and obstacles
@@ -37,7 +37,7 @@ void cityBlock(
     Color ground_plane_color{0.0f, 1.0f, 0.0f};
     renderPointCloud(viewer, plane_segmentation_result_0.second, "Plane Cloud", ground_plane_color);
 
-    std::vector<point_cloud_type> cloud_clusters = point_cloud_processor_p->Clustering(plane_segmentation_result_0.first, 1.0, 20, 1000);
+    std::vector<point_cloud_type> cloud_clusters = point_cloud_processor_p->Clustering(plane_segmentation_result_0.first, 0.45, 11, 2500);
 
     int cluster_id = 0;
     const std::vector<Color> obstacle_colors = {Color(1.0f, 0.0f, 0.0f), Color(1.0f, 1.0f, 0.0f), Color(0.0f, 0.5f, 1.0f), Color(0.0f, 0.0f, 1.0f)};
