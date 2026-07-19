@@ -50,21 +50,10 @@ public:
         const pcl::PointIndices::Ptr& inliers,
         const typename pcl::PointCloud<PointT>::Ptr& cloud);
 
-    std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> SegmentPlanePCL(
-        const typename pcl::PointCloud<PointT>::Ptr& cloud,
-        const int maxIterations,
-        const float distanceThreshold);
-    
     std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> SegmentPlane(
         const typename pcl::PointCloud<PointT>::Ptr& cloud,
         const int maxIterations,
         const float distanceThreshold);
-
-    std::vector<typename pcl::PointCloud<PointT>::Ptr> ClusteringPCL(
-        const typename pcl::PointCloud<PointT>::Ptr& cloud,
-        const float clusterTolerance,
-        const int minSize,
-        const int maxSize);
 
     std::vector<typename pcl::PointCloud<PointT>::Ptr> Clustering(
         const typename pcl::PointCloud<PointT>::Ptr& cloud,

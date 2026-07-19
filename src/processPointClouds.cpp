@@ -120,48 +120,6 @@ std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT
     return segResult;
 }
 
-
-template<typename PointT>
-std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> ProcessPointClouds<PointT>::SegmentPlanePCL(
-    const typename pcl::PointCloud<PointT>::Ptr& cloud,
-    const int maxIterations,
-    const float distanceThreshold)
-{
-    std::cout << cloud->size() << "\n";
-
-    // Time segmentation process
-    auto startTime = std::chrono::steady_clock::now();
-
-    // Prepare output container
-    pcl::PointIndices::Ptr inliers{new pcl::PointIndices};
-    pcl::ModelCoefficients::Ptr coefficients{new pcl::ModelCoefficients};
-
-    // Create the segmentation object
-    pcl::SACSegmentation<PointT> seg{};
-    seg.setOptimizeCoefficients(true);
-    seg.setModelType(pcl::SACMODEL_PLANE);
-    seg.setMethodType(pcl::SAC_RANSAC);
-    seg.setMaxIterations(maxIterations);
-    seg.setDistanceThreshold(distanceThreshold);
-
-    // Segment
-    seg.setInputCloud(cloud);
-    seg.segment(*inliers, *coefficients);
-
-    if (inliers->indices.size() == 0)
-    {
-        std::cout << "Could not estimate planar component of input cloud!" << "\n";
-    }
-
-    auto endTime = std::chrono::steady_clock::now();
-    auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
-    std::cout << "plane segmentation (PCL) took " << elapsedTime.count() << " milliseconds" << std::endl;
-
-    std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> segResult = SeparateClouds(inliers,cloud);
-    return segResult;
-}
-
-
 template<typename PointT>
 std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> ProcessPointClouds<PointT>::SegmentPlane(
     const typename pcl::PointCloud<PointT>::Ptr& cloud,
@@ -189,58 +147,6 @@ std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT
     // Reuse existing SeparateClouds to split into obstacles and plane
     std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> segResult = SeparateClouds(inliers, cloud);
     return segResult;
-}
-
-
-template<typename PointT>
-std::vector<typename pcl::PointCloud<PointT>::Ptr> ProcessPointClouds<PointT>::ClusteringPCL(
-    const typename pcl::PointCloud<PointT>::Ptr& cloud,
-    const float clusterTolerance,
-    const int minSize,
-    const int maxSize)
-{
-    // Time clustering process
-    auto startTime = std::chrono::steady_clock::now();
-
-    std::vector<typename pcl::PointCloud<PointT>::Ptr> clusters;
-
-    // Use PCL's EuclideanClusterExtraction
-    typename pcl::search::KdTree<PointT>::Ptr tree{new typename pcl::search::KdTree<PointT>};
-    tree->setInputCloud(cloud);
-
-    // Setup and parameterize
-    typename pcl::EuclideanClusterExtraction<PointT> ece{};
-    ece.setClusterTolerance(clusterTolerance);
-    ece.setMinClusterSize(minSize);
-    ece.setMaxClusterSize(maxSize);
-    ece.setSearchMethod(tree);
-
-    // Set input
-    ece.setInputCloud(cloud);
-
-    // Set output
-    std::vector<pcl::PointIndices> cluster_indices;
-    ece.extract(cluster_indices);
-
-    for(auto const& cluster : cluster_indices)
-    {
-        typename pcl::PointCloud<PointT>::Ptr cloud_cluster{new typename pcl::PointCloud<PointT>};
-        cloud_cluster->reserve(cluster.indices.size());
-        for (auto const& idx : cluster.indices)
-        {
-            cloud_cluster->push_back((*cloud)[idx]);
-        }
-        cloud_cluster->width = cloud_cluster->size();
-        cloud_cluster->height = 1;
-        cloud_cluster->is_dense = true;
-
-        clusters.push_back(cloud_cluster);
-    }
-    auto endTime = std::chrono::steady_clock::now();
-    auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
-    std::cout << "clustering (PCL) took " << elapsedTime.count() << " milliseconds and found " << clusters.size() << " clusters" << std::endl;
-
-    return clusters;
 }
 
 template<typename PointT>
