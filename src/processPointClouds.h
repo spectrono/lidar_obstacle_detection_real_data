@@ -69,18 +69,25 @@ public:
     std::vector<typename pcl::PointCloud<PointT>::Ptr> Clustering(
         const typename pcl::PointCloud<PointT>::Ptr& cloud,
         const float clusterTolerance,
-        const int minSize,
-        const int maxSize);
+        const int minSizeForPoleLikeClusters,
+        const int minSizeForBoxLikeClusters,
+        const int maxSizeForBoxLikeClusters);
 
     Box BoundingBox(const typename pcl::PointCloud<PointT>::Ptr& cluster);
-
+        
     void savePcd(
         const typename pcl::PointCloud<PointT>::Ptr& cloud,
         std::string file);
-
+            
     typename pcl::PointCloud<PointT>::Ptr loadPcd(std::string file);
-
+            
     std::vector<std::filesystem::path> streamPcd(std::string dataPath);
+
+private:
+    bool isClusterPoleLike(
+        const typename pcl::PointCloud<PointT>::Ptr& cloud,
+        const std::vector<int>& clusterIndices,
+        const float poleLikeRatioThreshold = 3.0f);
 };
 
 #endif /* PROCESSPOINTCLOUDS_H_ */

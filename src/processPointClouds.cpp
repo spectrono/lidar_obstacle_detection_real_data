@@ -2,6 +2,7 @@
 
 #include "processPointClouds.h"
 #include <filesystem>
+#include <numeric>
 
 
 //constructor:
@@ -243,11 +244,57 @@ std::vector<typename pcl::PointCloud<PointT>::Ptr> ProcessPointClouds<PointT>::C
 }
 
 template<typename PointT>
+bool ProcessPointClouds<PointT>::isClusterPoleLike(
+    const typename pcl::PointCloud<PointT>::Ptr& cloud,
+    const std::vector<int>& clusterIndices,
+    const float poleLikeRatioThreshold)
+{
+    // Use Welford's online algorithm to compute mean and variance in a single pass
+    // This reduces from 6 passes (3 for mean + 3 for variance) to just 1 pass
+    int count = 0;
+    float mean_x = 0.0f, mean_y = 0.0f, mean_z = 0.0f;
+    float M2_x = 0.0f, M2_y = 0.0f, M2_z = 0.0f;
+    
+    for (int idx : clusterIndices)
+    {
+        const auto& point = (*cloud)[idx];
+        ++count;
+        
+        // Welford's algorithm for x
+        float delta_x = point.x - mean_x;
+        mean_x += delta_x / count;
+        M2_x += delta_x * (point.x - mean_x);
+        
+        // Welford's algorithm for y
+        float delta_y = point.y - mean_y;
+        mean_y += delta_y / count;
+        M2_y += delta_y * (point.y - mean_y);
+        
+        // Welford's algorithm for z
+        float delta_z = point.z - mean_z;
+        mean_z += delta_z / count;
+        M2_z += delta_z * (point.z - mean_z);
+    }
+    
+    // Compute final variances (using population variance: divide by n)
+    const float var_x = M2_x / count;
+    const float var_y = M2_y / count;
+    const float var_z = M2_z / count;
+    
+    // Combined horizontal variance (this is just a heuristic!)
+    const float var_horizontal = var_x + var_y;
+    
+    // A cluster is pole-like if vertical variance dominates horizontal variance (my model assumption!)
+    return (var_z >= (poleLikeRatioThreshold * var_horizontal));
+}
+
+template<typename PointT>
 std::vector<typename pcl::PointCloud<PointT>::Ptr> ProcessPointClouds<PointT>::Clustering(
     const typename pcl::PointCloud<PointT>::Ptr& cloud,
     const float clusterTolerance,
-    const int minSize,
-    const int maxSize)
+    const int minSizeForPoleLikeClusters,
+    const int minSizeForBoxLikeClusters,
+    const int maxSizeForBoxLikeClusters)
 {
     // Time clustering process
     auto startTime = std::chrono::steady_clock::now();
@@ -259,8 +306,15 @@ std::vector<typename pcl::PointCloud<PointT>::Ptr> ProcessPointClouds<PointT>::C
     std::vector<typename pcl::PointCloud<PointT>::Ptr> clusters;
     for (const auto& cluster : cluster_indices)
     {
-        // Skip clusters that don't meet size requirements
-        if (cluster.size() < static_cast<size_t>(minSize) || cluster.size() > static_cast<size_t>(maxSize))
+        const int cluster_size = static_cast<int>(cluster.size());
+        // Skip clusters that don't meet size requirements (note: poles can have slightly lower number of points and are checked for below)
+        if ((cluster_size < minSizeForPoleLikeClusters) || (cluster_size > maxSizeForBoxLikeClusters))
+        {
+            continue;
+        }
+
+        // For small clusters, check if they have a pole-like appearance
+        if ((cluster_size < minSizeForBoxLikeClusters) && (!isClusterPoleLike(cloud, cluster, 3.0f)))
         {
             continue;
         }

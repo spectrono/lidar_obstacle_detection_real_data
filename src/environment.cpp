@@ -37,7 +37,7 @@ void cityBlock(
     Color ground_plane_color{0.0f, 1.0f, 0.0f};
     renderPointCloud(viewer, plane_segmentation_result_0.second, "Plane Cloud", ground_plane_color);
 
-    std::vector<point_cloud_type> cloud_clusters = point_cloud_processor_p->Clustering(plane_segmentation_result_0.first, 0.45, 11, 2500);
+    std::vector<point_cloud_type> cloud_clusters = point_cloud_processor_p->Clustering(plane_segmentation_result_0.first, 0.45, 9, 30, 2500);
 
     int cluster_id = 0;
     const std::vector<Color> obstacle_colors = {Color(1.0f, 0.0f, 0.0f), Color(1.0f, 1.0f, 0.0f), Color(0.0f, 0.5f, 1.0f), Color(0.0f, 0.0f, 1.0f)};

@@ -144,8 +144,17 @@ Run from the build directory:
 - **KD-Tree implementation** for efficient nearest neighbor search
 - **Configurable parameters**:
   - Distance tolerance
-  - Minimum cluster size
-  - Maximum cluster size
+  - Minimum cluster size for pole like obstacles (see below for details)
+  - Minimum cluster size for box like obstacles
+  - Maximum cluster size for box like obstacles
+
+### Pole-like Cluster Detection
+- **Method**: `isClusterPoleLike()` in `src/processPointClouds.h/cpp`
+- **Purpose**: Improves detection of vertical obstacles like poles with few points
+- **Algorithm**: Compares vertical variance (z-dimension) against horizontal variance (x+y dimensions)
+- **Efficient**: Uses Welford's online algorithm for efficient mean and variance calculation
+- **Performance**: Greatly increases clustering accuracy for small vertically-extended obstacles
+- **Threshold**: Configurable ratio parameter (default: 3.0x vertical variance required)
 
 ## Notes
 
