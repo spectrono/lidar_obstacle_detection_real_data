@@ -1,8 +1,8 @@
 /* \author Aaron Brown */
 // Quiz on implementing simple RANSAC line fitting
 
-#include "render/render.h"
-#include "render/box.h"
+#include "../render/render.h"
+#include "../render/box.h"
 #include <chrono>
 #include <string>
 #include "kdtree.h"
@@ -40,7 +40,6 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr CreateData(std::vector<std::vector<float>> p
   	cloud->height = 1;
 
   	return cloud;
-
 }
 
 
@@ -69,10 +68,7 @@ void render2DTree(Node* node, pcl::visualization::PCLVisualizer::Ptr& viewer, Bo
 
 		render2DTree(node->left,viewer, lowerWindow, iteration, depth+1);
 		render2DTree(node->right,viewer, upperWindow, iteration, depth+1);
-
-
 	}
-
 }
 
 void proximityBasedClusterAggregation(const int index, std::vector<bool>& isPointProcessed, std::vector<int>& cluster, const std::vector<std::vector<float>>& points, KdTree* tree, float distanceTol)
@@ -120,7 +116,6 @@ std::vector<std::vector<int>> euclideanCluster(const std::vector<std::vector<flo
 
 int main ()
 {
-
 	// Create viewer
 	Box window;
   	window.x_min = -10;
@@ -152,9 +147,9 @@ int main ()
 
   	// Time segmentation process
   	auto startTime = std::chrono::steady_clock::now();
-  	//
+
   	std::vector<std::vector<int>> clusters = euclideanCluster(points, tree, 3.0);
-  	//
+
   	auto endTime = std::chrono::steady_clock::now();
   	auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
   	std::cout << "clustering found " << clusters.size() << " and took " << elapsedTime.count() << " milliseconds" << std::endl;
@@ -166,16 +161,19 @@ int main ()
   	{
   		pcl::PointCloud<pcl::PointXYZ>::Ptr clusterCloud(new pcl::PointCloud<pcl::PointXYZ>());
   		for(int indice: cluster)
-  			clusterCloud->points.push_back(pcl::PointXYZ(points[indice][0],points[indice][1],0));
+		{
+			clusterCloud->points.push_back(pcl::PointXYZ(points[indice][0],points[indice][1],0));
+		}
   		renderPointCloud(viewer, clusterCloud,"cluster"+std::to_string(clusterId),colors[clusterId%3]);
   		++clusterId;
   	}
   	if(clusters.size()==0)
-  		renderPointCloud(viewer,cloud,"data");
+	{
+		renderPointCloud(viewer,cloud,"data");
+	}
 	
   	while (!viewer->wasStopped ())
   	{
   	  viewer->spinOnce ();
   	}
-  	
 }

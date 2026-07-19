@@ -40,13 +40,13 @@ target_link_libraries(environment ${PCL_LIBRARIES})
 
 # Quiz executables
 add_executable(quizCluster
-    src/cluster.cpp
+    src/quizs/cluster.cpp
     src/render/render.cpp
 )
 target_link_libraries(quizCluster ${PCL_LIBRARIES})
 
 add_executable(quizRansac
-    src/ransac2d.cpp
+    src/quizs/ransac2d.cpp
     src/render/render.cpp
     src/processPointClouds.cpp
 )

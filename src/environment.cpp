@@ -67,7 +67,6 @@ void cityBlock(
 //setAngle: SWITCH CAMERA ANGLE {XY, TopDown, Side, FPS}
 void initCamera(CameraAngle setAngle, pcl::visualization::PCLVisualizer::Ptr& viewer)
 {
-
     viewer->setBackgroundColor (0, 0, 0);
 
     // set camera position and angle
@@ -84,7 +83,9 @@ void initCamera(CameraAngle setAngle, pcl::visualization::PCLVisualizer::Ptr& vi
     }
 
     if(setAngle != CameraAngle::FPS)
+    {
         viewer->addCoordinateSystem (1.0);
+    }
 }
 
 
