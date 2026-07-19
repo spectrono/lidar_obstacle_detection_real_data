@@ -88,8 +88,8 @@ cmake --build . -- -j$(sysctl -n hw.ncpu)
 
 The build creates three executables:
 - `environment` - Main LiDAR obstacle detection application
-- `quizCluster` - KD-tree clustering quiz implementation (from the lessons)
-- `quizRansac` - RANSAC line fitting quiz implementation (from the lessons)
+- `quizCluster` - KD-tree clustering quiz implementation (kept from the lessons for reference)
+- `quizRansac` - RANSAC line fitting quiz implementation (kept from the lessons for reference)
 
 Run from the build directory:
 ```bash
